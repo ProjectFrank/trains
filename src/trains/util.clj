@@ -1,5 +1,6 @@
 (ns trains.util
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [clojure.set :as set]))
 
 (defn route-edges [route-vec]
   (partition 2 1 route-vec))
@@ -20,3 +21,24 @@
                   (+ cost edge-length)))))
           0
           (route-edges route)))
+
+(defn trips-by-num-stops
+  [adjacency-list start destination maximum-stops]
+  (letfn [(helper [paths current-path]
+            (let [last-node (last current-path)
+                  num-stops (dec (count current-path))]
+              (cond
+                (and (= destination last-node)
+                     (<= 1 num-stops))
+                (conj paths current-path)
+                
+                (<= maximum-stops num-stops)
+                #{}
+
+                :else
+                (let [next-nodes (keys (get adjacency-list last-node))]
+                  (reduce set/union
+                          (map (fn [next-node]
+                                 (helper #{} (conj current-path next-node)))
+                               next-nodes))))))]
+    (helper #{} [start])))
