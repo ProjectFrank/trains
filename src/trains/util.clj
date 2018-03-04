@@ -23,22 +23,30 @@
           (route-edges route)))
 
 (defn trips-by-num-stops
-  [adjacency-list start destination maximum-stops]
-  (letfn [(helper [paths current-path]
-            (let [last-node (last current-path)
-                  num-stops (dec (count current-path))]
-              (cond
-                (and (= destination last-node)
-                     (<= 1 num-stops))
-                (conj paths current-path)
-                
-                (<= maximum-stops num-stops)
-                #{}
+  ([adjacency-list start destination maximum-stops]
+   (trips-by-num-stops adjacency-list
+                       start
+                       destination
+                       1
+                       maximum-stops))
+  ([adjacency-list start destination minimum-stops maximum-stops]
+   (letfn [(helper [paths current-path]
+             (let [last-node (last current-path)
+                   num-stops (dec (count current-path))]
+               (cond
+                 (and (= destination last-node)
+                      (<= minimum-stops num-stops))
+                 (conj paths current-path)
+                 
+                 (<= maximum-stops num-stops)
+                 #{}
 
-                :else
-                (let [next-nodes (keys (get adjacency-list last-node))]
-                  (reduce set/union
-                          (map (fn [next-node]
-                                 (helper #{} (conj current-path next-node)))
-                               next-nodes))))))]
-    (helper #{} [start])))
+                 :else
+                 (let [next-nodes (keys (get adjacency-list last-node))]
+                   (reduce set/union
+                           (map (fn [next-node]
+                                  (helper #{} (conj current-path next-node)))
+                                next-nodes))))))]
+     (helper #{} [start]))))
+
+

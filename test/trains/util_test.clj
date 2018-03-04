@@ -9,4 +9,12 @@
          (util/trips-by-num-stops fixtures/adjacency-list
                                   "C"
                                   "C"
-                                  3))))
+                                  3)))
+  (is (= #{["A" "B" "C" "D" "C"]
+           ["A" "D" "C" "D" "C"]
+           ["A" "D" "E" "B" "C"]}
+         (util/trips-by-num-stops fixtures/adjacency-list
+                                  "A"
+                                  "C"
+                                  4
+                                  4))))
