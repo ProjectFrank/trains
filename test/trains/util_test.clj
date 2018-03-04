@@ -18,3 +18,16 @@
                                   "C"
                                   4
                                   4))))
+
+(deftest trips-by-max-length-test
+  (is (= #{["C" "D" "C"]
+           ["C" "E" "B" "C"]
+           ["C" "D" "E" "B" "C"]
+           ["C" "D" "C" "E" "B" "C"]
+           ["C" "E" "B" "C" "D" "C"]
+           ["C" "E" "B" "C" "E" "B" "C"]
+           ["C" "E" "B" "C" "E" "B" "C" "E" "B" "C"]}
+         (util/trips-by-max-length fixtures/adjacency-list
+                                   "C"
+                                   "C"
+                                   30))))

@@ -49,4 +49,26 @@
                                 next-nodes))))))]
      (helper #{} [start]))))
 
-
+(defn trips-by-max-length [adjacency-list start destination max-length]
+  (letfn [(helper [paths current-path current-path-length]
+            (let [last-node (last current-path)]
+              (if (<= max-length current-path-length)
+                #{}
+                (let [next-nodes (keys (get adjacency-list last-node))
+                      more-paths (reduce set/union
+                                         (map (fn [next-node]
+                                                (helper #{}
+                                                        (conj current-path
+                                                              next-node)
+                                                        (+ current-path-length
+                                                           (get-in adjacency-list
+                                                                   [last-node
+                                                                    next-node
+                                                                    :length]))))
+                                              next-nodes))]
+                  (if (and (= destination last-node)
+                           (not= 1 (count current-path))
+                           (<= current-path-length max-length))
+                    (conj more-paths current-path)
+                    more-paths)))))]
+    (helper #{} [start] 0)))
